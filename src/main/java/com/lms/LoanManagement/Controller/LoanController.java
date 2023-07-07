@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/lms/")
@@ -36,5 +37,26 @@ public class LoanController {
     public List<Loan> allUserLoans(){
         List<Loan> lList = loanRepository.findAll();
         return lList;
+    }
+
+    @PutMapping("/approveLoan/{lId}")
+    public ResponseEntity<?> approveLoan(@PathVariable ("lId") int lId) {
+       Loan loan1 = loanRepository.findById(lId).get();
+        if(loan1!=null){
+
+            loanService.approveLoan(loan1);
+            return new ResponseEntity<String>("loan approved",HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("Something missing",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PutMapping("/rejectLoan")
+    public ResponseEntity<?> rejectLoan(@RequestBody Loan loan){
+        Optional<Loan> loan1 = loanRepository.findById(loan.getLoan_Id());
+        if(loan1.isPresent()){
+            loanService.rejectLoan(loan1.get());
+            return new ResponseEntity<String>("loan rejected",HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("Something missing",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

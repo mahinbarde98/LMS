@@ -1,9 +1,6 @@
 package com.lms.LoanManagement.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -24,8 +21,10 @@ public class Loan {
     private String occupation;
     private String firstName;
     private String lastName;
-    private String email;
+    @Column(unique = true)
+    private String emailId;
     private long phoneNo;
 
+    private String status="Pending";//pending,approved , rejected
 
 }

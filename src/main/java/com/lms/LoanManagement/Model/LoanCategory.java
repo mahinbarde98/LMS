@@ -15,4 +15,5 @@ public class LoanCategory {
     @Id
     private String category;
     private String catDetails;
+    private float interestRate;
 }
