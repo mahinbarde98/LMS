@@ -5,7 +5,6 @@ import com.lms.LoanManagement.Model.Loan;
 import com.lms.LoanManagement.Repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/lms/")
 public class LoanController {
 
@@ -39,7 +39,7 @@ public class LoanController {
         return lList;
     }
 
-    @PutMapping("/approveLoan/{lId}")
+    @PutMapping("approveLoan/{lId}")
     public ResponseEntity<?> approveLoan(@PathVariable ("lId") int lId) {
        Loan loan1 = loanRepository.findById(lId).get();
         if(loan1!=null){
@@ -50,7 +50,7 @@ public class LoanController {
         return new ResponseEntity<String>("Something missing",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PutMapping("/rejectLoan")
+    @PutMapping("rejectLoan")
     public ResponseEntity<?> rejectLoan(@RequestBody Loan loan){
         Optional<Loan> loan1 = loanRepository.findById(loan.getLoan_Id());
         if(loan1.isPresent()){
@@ -58,5 +58,39 @@ public class LoanController {
             return new ResponseEntity<String>("loan rejected",HttpStatus.OK);
         }
         return new ResponseEntity<String>("Something missing",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("findById/{loanId}")
+    public ResponseEntity<?> loanById(@PathVariable ("loanId") int loanId){
+        Optional<Loan> lList = loanService.findById(loanId);
+        if(lList.isPresent()){
+            return new ResponseEntity<>(lList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("findByFirstName/{firstName}")
+    public ResponseEntity<?> loanByFirstName(@PathVariable ("firstName") String firstName){
+        Optional<Loan> lList = loanService.findByFirstName(firstName);
+        if(lList.isPresent()){
+            return new ResponseEntity<>(lList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("findByLastName/{lastName}")
+    public ResponseEntity<?> loanByLastName(@PathVariable ("lastName") String lastName){
+        Optional<Loan> lList = loanService.findByLastName(lastName);
+        if(lList.isPresent()){
+            return new ResponseEntity<>(lList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    @PutMapping("updateLoan/{loanId}")
+    public ResponseEntity<?> updateLoan(@PathVariable ("loanId") int loanId,@RequestBody Loan loan){
+        Optional<Loan> loan1 = loanRepository.findById(loanId);
+        if(loan1.isPresent() && loanService.updateLoan(loanId,loan)){
+
+            return new ResponseEntity<String>("loan Updated",HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("loan not updated",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

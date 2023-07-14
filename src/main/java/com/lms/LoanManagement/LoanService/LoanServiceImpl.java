@@ -5,7 +5,6 @@ import com.lms.LoanManagement.Repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -54,6 +53,52 @@ public class LoanServiceImpl implements LoanService {
                 return true;
             }
 
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<Loan> findById(int lonId) {
+        Optional<Loan> loanList = repository.findById(lonId);
+        if(!loanList.isEmpty()){
+            return loanList;
+        }
+        return null;
+    }
+
+    @Override
+    public Optional<Loan> findByFirstName(String firstName) {
+        Optional<Loan> loanList = repository.findByFirstName(firstName);
+        if(!loanList.isEmpty()){
+            return loanList;
+        }
+
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Loan> findByLastName(String lastName) {
+        Optional<Loan> loanList = repository.findByLastName(lastName);
+        if(!loanList.isEmpty()){
+            return loanList;
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean updateLoan(int loanId, Loan loan) {
+        Optional<Loan> loan1 = repository.findById(loanId);
+        if(!loan1.isEmpty()){
+            loan1.get().setFirstName(loan.getFirstName());
+            loan1.get().setLastName(loan.getLastName());
+            loan1.get().setDuration(loan.getDuration());
+            loan1.get().setAddress(loan.getAddress());
+            loan1.get().setDuration(loan.getDuration());
+            loan1.get().setPhoneNo(loan.getPhoneNo());
+            repository.saveAndFlush(loan1.get());
+            return true;
         }
         return false;
     }
